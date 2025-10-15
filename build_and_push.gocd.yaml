@@ -8,19 +8,19 @@ pipelines:
         url: https://github.com/seu-usuario/simple-app.git
         branch: main
     stages:
-      build:
-        jobs:
-          build_image:
-            elastic_profile_id: demo-app
-            tasks:
-              - exec:
-                  command: /bin/bash
-                  arguments:
-                    - -c
-                    - |
-                      echo "Logging into Docker Hub..."
-                      echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                      echo "Building Docker image..."
-                      docker build -t $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL .
-                      echo "Pushing Docker image..."
-                      docker push $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL
+      - build:
+          jobs:
+            build_image:
+              elastic_profile_id: demo-app
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        echo "Logging into Docker Hub..."
+                        echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+                        echo "Building Docker image..."
+                        docker build -t $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL .
+                        echo "Pushing Docker image..."
+                        docker push $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL
