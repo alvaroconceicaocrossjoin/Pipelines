@@ -4,6 +4,10 @@ pipelines:
     group: sample
     label_template: ${COUNT}
     lock_behavior: unlockWhenFinished
+    materials: 
+      git: 
+        url: https://github.com/seu-usuario/simple-app.git 
+        branch: main
     stages:
       - build_stage:
           fetch_materials: true
