@@ -38,6 +38,20 @@ pipelines:
                 - docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile
                 command: /bin/bash
                 run_if: passed
+          install_kubectl:
+            timeout: 0
+            elastic_profile_id: kubectl_ubuntu
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                - |
+                  curl -LO https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
+                  chmod +x kubectl
+                  mv kubectl /usr/local/bin/
+                  kubectl version --client
+                command: /bin/bash
+                run_if: passed
           build_deploy:
             timeout: 0
             elastic_profile_id: demo-app
