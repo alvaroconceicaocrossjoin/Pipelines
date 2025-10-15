@@ -47,14 +47,13 @@ pipelines:
                 - -c
                 - |
                   curl -LO https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl
-                  chmod +x kubectl
-                  mv kubectl /usr/local/bin/
-                  kubectl version --client
+                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+                  echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
                 command: /bin/bash
                 run_if: passed
           build_deploy:
             timeout: 0
-            elastic_profile_id: demo-app
+            elastic_profile_id: kubectl_ubuntu
             tasks:
             - exec:
                 arguments:
