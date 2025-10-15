@@ -36,5 +36,7 @@ pipelines:
                 arguments:
                 - -c
                 - docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile
+                - kubectl apply -f k8s-deployment.yaml --namespace default
+                - kubectl apply -f k8s-service.yaml --namespace default
                 command: /bin/bash
                 run_if: passed
