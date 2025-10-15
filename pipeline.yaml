@@ -1,12 +1,11 @@
 format_version: 3
 pipelines:
-  pull_bulletin_board_image:
-    group: demo
+  build_and_publish_image:
+    group: sample
     label_template: ${COUNT}
     lock_behavior: unlockWhenFinished
     display_order: 1
     environment_variables:
-      DOCKERHUB_USERNAME: alvaroconceicao
     materials:
       git:
         git: https://github.com/gocd-demo/node-bulletin-board.git
@@ -14,21 +13,28 @@ pipelines:
         auto_update: true
         branch: master
     stages:
-      - pull_stage:
-          fetch_materials: true
-          keep_artifacts: false
-          clean_workspace: false
-          approval:
-            type: success
-          jobs:
-            pull_job:
-              timeout: 0
-              elastic_profile_id: demo-app
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - |
-                        echo "Pulling Docker image from Docker Hub..."
-                        docker pull ${DOCKERHUB_USERNAME}/bulletin-board:7
+    - build_and_publish_image:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          build_image:
+            timeout: 0
+            elastic_profile_id: demo-app
+            artifacts:
+            - external:
+                id: bulletin-board
+                store_id: dockerhub
+                configuration:
+                  options:
+                    Image: ${DOCKERHUB_USERNAME}/bulletin-board
+                    Tag: ${GO_PIPELINE_LABEL}
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                - docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile.application
+                command: /bin/bash
+                run_if: passed
