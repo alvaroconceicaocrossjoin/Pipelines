@@ -1,7 +1,6 @@
 format_version: 3
 pipelines:
   MEU_build_and_publish_image:
-    group: sample
     label_template: ${COUNT}
     lock_behavior: unlockWhenFinished
     display_order: 1
