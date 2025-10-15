@@ -4,31 +4,37 @@ pipelines:
     group: sample
     label_template: ${COUNT}
     lock_behavior: unlockWhenFinished
-    materials: 
-      git: 
-        url: https://github.com/seu-usuario/simple-app.git 
+    display_order: 1
+    environment_variables:
+    materials:
+      git:
+        git: https://github.com/alvaroconceicaocrossjoin/simple-app
+        shallow_clone: true
+        auto_update: true
         branch: main
     stages:
-      - build_stage:
-          fetch_materials: true
-          jobs:
-            build_image:
-              elastic_profile_id: demo-app
-              artifacts:
-                - external:
-                    id: bulletin-board
-                    store_id: dockerhub
-                    configuration:
-                      options:
-                        Image: ${DOCKERHUB_USERNAME}/bulletin-board
-                        Tag: ${GO_PIPELINE_LABEL}
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - |
-                        echo "Building Docker image..."
-                        docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile.application
-                        echo "Pushing Docker image..."
-                        docker push $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL
+    - build_and_publish_image:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          build_image:
+            timeout: 0
+            elastic_profile_id: demo-app
+            artifacts:
+            - external:
+                id: bulletin-board
+                store_id: dockerhub
+                configuration:
+                  options:
+                    Image: ${DOCKERHUB_USERNAME}/bulletin-board
+                    Tag: ${GO_PIPELINE_LABEL}
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                - docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile.application
+                command: /bin/bash
+                run_if: passed
