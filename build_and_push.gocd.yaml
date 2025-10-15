@@ -1,26 +1,30 @@
 format_version: 3
 pipelines:
-  build_and_push:
-    group: simple
+  build_and_publish_image:
+    group: sample
     label_template: ${COUNT}
-    materials:
-      git:
-        url: https://github.com/seu-usuario/simple-app.git
-        branch: main
+    lock_behavior: unlockWhenFinished
     stages:
-      - build:
+      - build_stage:
+          fetch_materials: true
           jobs:
             build_image:
               elastic_profile_id: demo-app
+              artifacts:
+                - external:
+                    id: bulletin-board
+                    store_id: dockerhub
+                    configuration:
+                      options:
+                        Image: ${DOCKERHUB_USERNAME}/bulletin-board
+                        Tag: ${GO_PIPELINE_LABEL}
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
                       - |
-                        echo "Logging into Docker Hub..."
-                        echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
                         echo "Building Docker image..."
-                        docker build -t $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL .
+                        docker build -t $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL . -f Dockerfile.application
                         echo "Pushing Docker image..."
-                        docker push $DOCKERHUB_USERNAME/simple-app:$GO_PIPELINE_LABEL
+                        docker push $DOCKERHUB_USERNAME/bulletin-board:$GO_PIPELINE_LABEL
