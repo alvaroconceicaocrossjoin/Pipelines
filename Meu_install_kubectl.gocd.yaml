@@ -13,7 +13,7 @@ pipelines:
         name: upstream_pipeline
       SourceCodeRepo:
         git: https://github.com/alvaroconceicaocrossjoin/simple-app.git
-        shallow_clone: false
+        shallow_clone: true
         auto_update: true
         branch: master
         name: SourceCodeRepo
@@ -40,8 +40,6 @@ pipelines:
                   mv ./kubectl ~/.local/bin/kubectl
                   export PATH=$HOME/.local/bin:$PATH
                   kubectl version --client
-                  cd ~
-                  cd simple-app/
-                  kubectl apply -f ./k8s-deployment.yaml
+                  kubectl apply -f k8s-deployment.yaml
                 command: /bin/bash
                 run_if: passed
