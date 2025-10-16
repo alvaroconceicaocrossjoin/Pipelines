@@ -1,0 +1,40 @@
+format_version: 3
+pipelines:
+  Meu_deploy_image:
+    group: sample
+    label_template: ${COUNT}
+    lock_behavior: unlockWhenFinished
+    display_order: 1
+    environment_variables:
+    materials:
+      git:
+        git: https://github.com/alvaroconceicaocrossjoin/simple-app
+        shallow_clone: true
+        auto_update: true
+        branch: master
+    stages:
+    - Meu_deploy_image:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          deploy_image:
+            timeout: 0
+            elastic_profile_id: kubectl_ubuntu
+            artifacts:
+            - external:
+                id: bulletin-board
+                store_id: dockerhub
+                configuration:
+                  options:
+                    Image: ${DOCKERHUB_USERNAME}/bulletin-board
+                    Tag: ${GO_PIPELINE_LABEL}
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                - kubectl apply -f k8s-deployment.yaml
+                command: /bin/bash
+                run_if: passed
