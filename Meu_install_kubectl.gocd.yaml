@@ -40,5 +40,6 @@ pipelines:
                   export PATH=$HOME/.local/bin:$PATH
                   kubectl version --client
                   kubectl apply -f k8s-deployment.yaml
+                  cd ~
                 command: /bin/bash
                 run_if: passed
