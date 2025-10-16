@@ -11,11 +11,12 @@ pipelines:
         pipeline: Meu_build_image
         stage: Meu_build_image
         name: upstream_pipeline
-      git:
-        git: https://github.com/alvaroconceicaocrossjoin/simple-app
-        shallow_clone: true
+      SourceCodeRepo:
+        git: https://github.com/alvaroconceicaocrossjoin/simple-app.git
+        shallow_clone: false
         auto_update: true
         branch: master
+        name: SourceCodeRepo
     stages:
     - Meu_install_kubectl:
         fetch_materials: true
