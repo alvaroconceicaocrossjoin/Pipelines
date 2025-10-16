@@ -39,6 +39,8 @@ pipelines:
             - exec:
                 arguments:
                 - -c
-                - kubectl apply -f k8s-deployment.yaml
+                - |
+                  nano k8s-deployment.yaml
+                  pwd
                 command: /bin/bash
                 run_if: passed
