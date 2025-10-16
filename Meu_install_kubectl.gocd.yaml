@@ -32,6 +32,8 @@ pipelines:
                 arguments:
                 - -c
                 - |
+                  REPO_PATH=$(find /go/pipelines -type d -name '*simple-app*' 2>/dev/null | head -n 1)
+                  echo $REPO_PATH
                   cd /tmp
                   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
                   chmod +x kubectl
