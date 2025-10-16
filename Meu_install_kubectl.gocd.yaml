@@ -1,0 +1,39 @@
+format_version: 3
+pipelines:
+  Meu_install_kubectl:
+    group: sample
+    label_template: ${COUNT}
+    lock_behavior: unlockWhenFinished
+    display_order: 1
+    environment_variables:
+    materials:
+      git:
+        git: https://github.com/alvaroconceicaocrossjoin/simple-app
+        shallow_clone: true
+        auto_update: true
+        branch: master
+    stages:
+    - Meu_install_kubectl:
+        fetch_materials: true
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+        jobs:
+          install_kubectl:
+            timeout: 0
+            elastic_profile_id: kubectl_ubuntu
+            tasks:
+            - exec:
+                arguments:
+                - -c
+                - |
+                  cd /tmp
+                  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                  chmod +x kubectl
+                  mkdir -p ~/.local/bin
+                  mv ./kubectl ~/.local/bin/kubectl
+                  export PATH=$HOME/.local/bin:$PATH
+                  kubectl version --client
+                command: /bin/bash
+                run_if: passed
