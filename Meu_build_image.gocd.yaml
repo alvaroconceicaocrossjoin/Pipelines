@@ -30,7 +30,7 @@ pipelines:
                 configuration:
                   options:
                     Image: ${DOCKERHUB_USERNAME}/bulletin-board
-                    Tag: ${GO_PIPELINE_LABEL}
+                    Tag: latest
             tasks:
             - exec:
                 arguments:
