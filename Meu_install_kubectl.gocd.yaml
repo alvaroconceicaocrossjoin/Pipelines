@@ -40,6 +40,7 @@ pipelines:
                   mv ./kubectl ~/.local/bin/kubectl
                   export PATH=$HOME/.local/bin:$PATH
                   kubectl version --client
+                  cd /godata/pipelines/Meu_install_kubectl
                   kubectl apply -f k8s-deployment.yaml
                 command: /bin/bash
                 run_if: passed
