@@ -1,6 +1,6 @@
 format_version: 3
 pipelines:
-  Meu_install_kubectl:
+  Meu_deploy_app:
     group: sample
     label_template: ${COUNT}
     lock_behavior: unlockWhenFinished
@@ -18,14 +18,14 @@ pipelines:
         branch: master
         name: SourceCodeRepo
     stages:
-    - Meu_install_kubectl:
+    - Meu_deploy_app:
         fetch_materials: true
         keep_artifacts: false
         clean_workspace: false
         approval:
           type: success
         jobs:
-          install_kubectl:
+          deploy_app:
             timeout: 0
             elastic_profile_id: kubectl_ubuntu
             tasks:
@@ -40,7 +40,7 @@ pipelines:
                   mv ./kubectl ~/.local/bin/kubectl
                   export PATH=$HOME/.local/bin:$PATH
                   kubectl version --client
-                  cd /godata/pipelines/Meu_install_kubectl
+                  cd /godata/pipelines/Meu_deploy_app
                   pwd
                   kubectl apply -f k8s-service.yaml
                   kubectl apply -f k8s-deployment.yaml
